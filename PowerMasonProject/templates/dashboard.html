@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+    <section class="content" aria-label="Dashboard Content">
+        <div class="dashboard-cards" aria-label="Key project metrics">
+            <div class="card" aria-label="Active Projects" tabindex="0">
+                <h3>Active Projects</h3>
+                <p id="activeProjectsCount">8</p>
+            </div>
+            <div class="card" id="onTrack" aria-label="Projects on track" tabindex="0">
+                <h3>On Track</h3>
+                <p id="onTrackCount">5</p>
+            </div>
+            <div class="card" id="delayed" aria-label="Projects delayed" tabindex="0">
+                <h3>Delayed</h3>
+                <p id="delayedCount">2</p>
+            </div>
+            <div class="card" id="completed" aria-label="Completed Projects" tabindex="0">
+                <h3>Completed</h3>
+                <p id="completedCount">1</p>
+            </div>
+        </div>
+        <div class="notifications" role="alert" aria-live="assertive" tabindex="0">
+            <strong>Notifications:</strong>
+            <ul>
+                <li>Project Alpha delayed due to supply shortage</li>
+                <li>Budget exceeding alert on Project Beta</li>
+                <li>Milestone for Project Gamma due in 2 days</li>
+                <li>New team member added to Project Delta</li>
+                <li>Client feedback pending on Project Epsilon</li>
+                <li>Critical issue reported in Project Zeta</li>
+                <li>Reminder: Quarterly review meeting tomorrow</li>
+                <li>Approval required for Project Theta proposal</li>
+                <li>Server downtime affecting Project Iota</li>
+                <li>Training session for Project Kappa scheduled next week</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}

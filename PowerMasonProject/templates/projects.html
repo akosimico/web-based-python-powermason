@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Projects
+{% endblock %}
+{% block content %}
+<section
+  class="content"
+  id="projects"
+  role="region"
+  aria-label="Project Management"
+>
+  <div class="section-title">Project List</div>
+  <table role="table" aria-describedby="projectTableDesc">
+    <caption id="projectTableDesc" class="sr-only">
+      List of active projects
+    </caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Budget (₱)</th>
+        <th>Expenses (₱)</th>
+        <th>Progress (%)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="projectListTableBody">
+      <!-- Example row -->
+      <tr>
+        <td>Project Alpha</td>
+        <td><span class="status-tag status-delayed">Delayed</span></td>
+        <td>2024-01-01</td>
+        <td>2024-06-30</td>
+        <td>₱5,000,000</td>
+        <td>₱3,500,000</td>
+        <td>70%</td>
+        <td><button class="btnView">View</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btnNewProject">+ New Project</button>
+  <input
+    type="file"
+    id="fileInputSection1"
+    accept=".xls,.xlsx"
+    style="display: none"
+  />
+</section>
+{% endblock %}

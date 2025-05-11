@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Projects
+{% endblock %}
+{% block content %}
+
+<!-- costs.html -->
+<section class="content" id="costs" role="region" aria-label="Cost Tracking">
+  <div class="section-title">Cost Overview</div>
+
+  <p><strong>Total Budget:</strong> ₱16,450,000</p>
+  <p><strong>Total Expenses:</strong> ₱10,800,000</p>
+  <p><strong>Remaining:</strong> ₱5,650,000</p>
+
+  <form id="expenseForm">
+    <label for="expenseName">Expense Name:</label>
+    <input type="text" id="expenseName" name="expenseName" required />
+
+    <label for="expenseAmount">Amount (₱):</label>
+    <input type="number" id="expenseAmount" name="expenseAmount" required />
+
+    <label for="expenseProject">Project:</label>
+    <input type="text" id="expenseProject" name="expenseProject" required />
+
+    <button type="submit">Add Expense</button>
+  </form>
+
+  <div id="expensesList" aria-live="polite"></div>
+</section>
+{% endblock %}

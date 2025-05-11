@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Projects
+{% endblock %}
+{% block content %}
+<!-- estimation.html -->
+<section
+  class="content"
+  id="estimation"
+  role="region"
+  aria-label="Project Estimation"
+>
+  <div class="section-title">Project Estimation with Predictive Analytics</div>
+
+  <p>
+    Use historical data and predictive analytics to estimate project costs and
+    durations more accurately.
+  </p>
+
+  <form id="estimationForm">
+    <label for="projectNameEstimate">Project Name:</label>
+    <input
+      type="text"
+      id="projectNameEstimate"
+      name="projectNameEstimate"
+      required
+    />
+
+    <label for="estimatedBudget">Estimated Budget (₱):</label>
+    <input type="number" id="estimatedBudget" name="estimatedBudget" required />
+
+    <label for="estimatedDuration">Estimated Duration (days):</label>
+    <input
+      type="number"
+      id="estimatedDuration"
+      name="estimatedDuration"
+      required
+    />
+
+    <button type="submit">Estimate</button>
+  </form>
+
+  <div id="estimationResult"></div>
+</section>
+{% endblock %}

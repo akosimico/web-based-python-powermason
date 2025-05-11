@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block header %}
+    Projects
+{% endblock %}
+{% block content %}
+<!-- reports.html -->
+<section class="content" id="reports" role="region" aria-label="Reports Module">
+  <div class="section-title">Automated Reports</div>
+
+  <p>Select report type to generate:</p>
+  <select id="reportTypeSelect">
+    <option value="">-- Select Report --</option>
+    <option value="summary">Summary Report</option>
+    <option value="detailed">Detailed Report</option>
+  </select>
+
+  <button id="generateReportButton">Generate Report</button>
+
+  <div id="reportOutput"></div>
+</section>
+{% endblock %}
