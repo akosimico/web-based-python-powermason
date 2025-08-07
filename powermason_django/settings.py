@@ -121,8 +121,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 import os
 
-
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Required for collectstatic
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Optional, if you have a 'static' folder
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
