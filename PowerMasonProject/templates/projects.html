@@ -1,15 +1,11 @@
 {% extends "base.html" %}
-
+{% load humanize %}
+{% load static %}
 {% block header %}
-    Projects
+Projects
 {% endblock %}
 {% block content %}
-<section
-  class="content"
-  id="projects"
-  role="region"
-  aria-label="Project Management"
->
+<section class="content" id="projects" role="region" aria-label="Project Management">
   <div class="section-title">Project List</div>
   <table role="table" aria-describedby="projectTableDesc">
     <caption id="projectTableDesc" class="sr-only">
@@ -28,26 +24,76 @@
       </tr>
     </thead>
     <tbody id="projectListTableBody">
-      <!-- Example row -->
+      {% for project in projects %}
       <tr>
-        <td>Project Alpha</td>
-        <td><span class="status-tag status-delayed">Delayed</span></td>
-        <td>2024-01-01</td>
-        <td>2024-06-30</td>
-        <td>₱5,000,000</td>
-        <td>₱3,500,000</td>
-        <td>70%</td>
+        <td>{{ project.name }}</td>
+        <td>
+          <span class="status-tag status-{{ project.status|lower}}">{{ project.status }}</span>
+        </td>
+        <td>{{ project.start_date }}</td>
+        <td>{{ project.end_date }}</td>
+        <td>₱{{ project.approved_contract|floatformat:2|intcomma }}</td>
+        <td>₱{{ project.total_expense|floatformat:2|intcomma }}</td>
+        <td>{{ project.accomplished_to_date|floatformat:2 }}%</td>
         <td><button class="btnView">View</button></td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
 
-  <button class="btnNewProject">+ New Project</button>
-  <input
-    type="file"
-    id="fileInputSection1"
-    accept=".xls,.xlsx"
-    style="display: none"
-  />
+  <button class="btnNewProject" id="newProjectBtn">+ New Project</button>
+
+  <form id="importForm" action="{% url 'import_excel' %}" method="POST" enctype="multipart/form-data"
+    style="display: none">
+    {% csrf_token %}
+    <input type="file" name="excel_file" accept=".xls,.xlsx" id="fileInput" style="display: none" />
+    <button type="submit" id="submitBtn" style="display: none">Submit</button>
+  </form>
 </section>
+
+<script>
+  // Show the file input when the "New Project" button is clicked
+  document
+    .getElementById("newProjectBtn")
+    .addEventListener("click", function () {
+      document.getElementById("fileInput").click();
+    });
+
+  // Prompt the user for confirmation before submitting the form
+  document.getElementById("fileInput").addEventListener("change", function () {
+    if (this.files.length > 0) {
+      const userConfirmed = confirm(
+        "Are you sure you want to upload this project file?"
+      );
+      if (userConfirmed) {
+        // Ensure CSRF token is added to the headers if using AJAX (example)
+        const csrfToken = document.querySelector(
+          "[name=csrfmiddlewaretoken]"
+        ).value;
+
+        const formData = new FormData(document.getElementById("importForm"));
+
+        // Create an AJAX request to submit the form
+        fetch("{% url 'import_excel' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": csrfToken, // Include CSRF token manually in AJAX headers
+          },
+          body: formData,
+        })
+          .then((response) => response.json()) // Assuming the response is JSON
+          .then((data) => {
+            console.log("File uploaded successfully:", data);
+            // You can handle further logic here after a successful upload
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+          });
+      } else {
+        // Clear the file input if the user cancels
+        this.value = "";
+      }
+    }
+  });
+</script>
 {% endblock %}

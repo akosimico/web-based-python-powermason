@@ -1,79 +1,48 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
+from decimal import Decimal
+from django.contrib.auth.models import User
 
-# Custom User Model
-class User(AbstractUser):
-    ROLE_CHOICES = [
-        ('Admin', 'Admin'),
-        ('Manager', 'Manager'),
-        ('Staff', 'Staff'),
-    ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-
-    # Add related_name to avoid conflict
-    groups = models.ManyToManyField(
-        'auth.Group', 
-        related_name='custom_user_set',  # Custom related name for groups
-        blank=True
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='custom_user_permissions_set',  # Custom related name for user permissions
-        blank=True
-    )
 # Project Model
 class Project(models.Model):
     STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Ongoing', 'Ongoing'),
+        ('onTrack', 'onTrack'),
+        ('Delayed', 'Delayed'),
         ('Completed', 'Completed'),
     ]
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateField()
+
+    # Fields
+    proj_id = models.CharField(max_length=50, unique=True)  # Unique Project ID
+    name = models.CharField(max_length=255)  # Project Name
+    location = models.CharField(max_length=255, blank=True, null=True)  # Project Location
+    start_date = models.DateField()  # Start Date
     end_date = models.DateField(blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    report_date = models.DateField(blank=True, null=True)  # Latest Report Date
+    progress_report_month_year = models.CharField(max_length=50, blank=True, null=True) # Progress Report Month and Year
+    accomplished_to_date = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
+    accomplished_before_period = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
+    accomplished_this_period = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
+    approved_contract = models.DecimalField(
+        max_digits=15, decimal_places=2, default=Decimal('0.00'),  # VAT Inclusive (Budget)
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
+    total_expense = models.DecimalField(
+        max_digits=15, decimal_places=2, default=Decimal('0.00'),  # Sum of Expense column
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
+
+    # Metadata
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='onTrack')
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='created_projects')
-
+    
     def __str__(self):
-        return self.name
-
-# Cost Tracking Model
-class Cost(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='costs')
-    description = models.CharField(max_length=255)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date_incurred = models.DateField()
-
-    def __str__(self):
-        return f"{self.project.name} - {self.description}"
-
-# Project Estimation Model
-class Estimation(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='estimations')
-    estimated_cost = models.DecimalField(max_digits=12, decimal_places=2)
-    estimated_duration = models.PositiveIntegerField(help_text="Duration in days")
-    notes = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f"Estimation for {self.project.name}"
-
-# Report Model
-class Report(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='reports')
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Report for {self.project.name}: {self.title}"
-
-# User Activity Log
-class ActivityLog(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activity_logs')
-    action = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.action} at {self.timestamp}"
+        return f"{self.proj_id} - {self.name}"
